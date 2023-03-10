@@ -32,7 +32,7 @@ app.get(`${api}/products`, async (req, res) => {
     }
     res.send(productList)
     // res.status(200).json(productList)
-})
+});
 
 app.post(`${api}/products`, (req, res) => {
     const product = new Product({
