@@ -19,7 +19,12 @@ router.get(`/all`, async (req, res) => {
 })
 
 router.get(`/`, async (req, res) => {
-    const productList = await Product.find()
+    let filter = {};
+    if(req.query.categories){
+        filter = {category:  req.query.categories.split(',') };
+    }
+
+    const productList = await Product.find(filter)
         .populate('category')
         .select('name category price rating -_id')
 
