@@ -3,19 +3,24 @@ const app = express()
 //const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const cors = require('cors');
+const cors = require('cors')
+const authJwt = require('./helpers/jwt')
+const errorhand = require('./helpers/errorHandler')
 
 //Environment Variable
-require('dotenv/config')
+//require('dotenv/config')
+require('dotenv').config()
 const api = process.env.API_URL
 
 //Cors
-app.use(cors());
+app.use(cors())
 app.options('*', cors())
 
 //middleware
 app.use(express.json())
-app.use(morgan('dev')) //short, tiny
+app.use(morgan('dev'))
+app.use(authJwt());
+app.use(errorhand);
 
 //Routes
 const categoriesRoutes = require('./routes/categories')
@@ -44,5 +49,5 @@ mongoose
 
 //Server
 app.listen(3000, () => {
-    console.log('server is running http://localhost:3000')
+    console.log('server is running at http://localhost:3000')
 })
