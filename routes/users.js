@@ -9,7 +9,7 @@ router.get(`/`, async (req, res) => {
     const userList = await User.find().select('-passwordHash')
 
     if (!userList) {
-        res.status(500).json({ success: false })
+        res.status(500).json({ success: false, error: err })
     }
     res.send(userList)
 })
@@ -89,6 +89,7 @@ router.post(`/login`, async (req, res) => {
         const mytoken = jwt.sign(
             {
                 userId: user.id,
+                isAdmin: user.isAdmin,
             },
             secret,
             { expiresIn: '1d' }
@@ -99,6 +100,17 @@ router.post(`/login`, async (req, res) => {
     }
 
     return res.status(200).send(user)
+})
+
+router.get(`/get/count`, async (req, res) =>{
+    const userCount = await User.countDocuments()
+
+    if(!userCount) {
+        res.status(500).json({success: false})
+    } 
+    res.send({
+        userCount: userCount
+    });
 })
 
 module.exports = router

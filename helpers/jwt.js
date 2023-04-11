@@ -1,27 +1,34 @@
-var { expressjwt: jwt } = require("express-jwt");
+var { expressjwt: jwt } = require('express-jwt')
 
-function authJwt(){
-  const secret = process.env.secret;
+function authJwt() {
+    const secret = process.env.secret
+    const api = process.env.API_URL
 
-  return jwt({
-    secret,
-    algorithms: ["HS256"]
-  });
+    return jwt({
+        secret,
+        algorithms: ['HS256'],
+        isRevoked: isRevoked,
+    }).unless({
+        path: [
+            { url: /\/api\/v1\/products(.*)/, methods: ['GET', 'OPTIONS'] },
+            { url: /\/api\/v1\/categories(.*)/, methods: ['GET', 'OPTIONS'] },
+            //{ url: /\/api\/v1\/users\/get(.*)/, methods: ['GET', 'OPTIONS'] },
+            `${api}/users/login`,
+            `${api}/users/register`,
+        ],
+    })
 }
 
-module.exports = authJwt;
+async function isRevoked(req, payload) {
+    if (!payload.payload.isAdmin) {
+        return true
+    }
 
+    //done(null, true);
+    //done();
 
+    console.log(payload.payload.isAdmin)
+    return false
+}
 
-// var { expressjwt: jwt } = require("express-jwt");
-// // or ES6
-// // import { expressjwt, ExpressJwtRequest } from "express-jwt";
-
-// app.get(
-//   "/protected",
-//   jwt({ secret: "shhhhhhared-secret", algorithms: ["HS256"] }),
-//   function (req, res) {
-//     if (!req.auth.admin) return res.sendStatus(401);
-//     res.sendStatus(200);
-//   }
-// );
+module.exports = authJwt
