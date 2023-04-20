@@ -47,7 +47,23 @@ router.post('/', async (req, res) => {
 
     const orderItemsIdsResolved = await orderItemsIds
 
-    console.log(orderItemsIdsResolved)
+    const totalPrices = await Promise.all(
+        orderItemsIdsResolved.map(async (orderItemId) => {
+            const orderItem = await OrderItem.findById(orderItemId).populate(
+                'product',
+                'price'
+            );
+
+            const totalPrice = orderItem.quantity * orderItem.product.price;
+
+            return totalPrice;
+        })
+    );
+
+    const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
+
+    console.log(orderItemsIdsResolved);
+    console.log(totalPrice);
 
     let order = new Order({
         orderItems: orderItemsIdsResolved,
@@ -58,7 +74,7 @@ router.post('/', async (req, res) => {
         country: req.body.country,
         phone: req.body.phone,
         status: req.body.status,
-        totalPrice: req.body.totalPrice,
+        totalPrice: totalPrice,
         user: req.body.user,
     })
     order = await order.save()
@@ -82,25 +98,25 @@ router.put('/:id', async (req, res) => {
     res.send(order)
 })
 
-router.delete("/:id", (req, res) => {
+router.delete('/:id', (req, res) => {
     Order.findByIdAndRemove(req.params.id)
-      .then(async (order) => {
-        if (order) {
-          await order.orderItems.map(async (orderItem) => {
-            await OrderItem.findByIdAndRemove(orderItem);
-          });
-          return res
-            .status(200)
-            .json({ success: true, message: "the order is deleted!" });
-        } else {
-          return res
-            .status(404)
-            .json({ success: false, message: "order not found!" });
-        }
-      })
-      .catch((err) => {
-        return res.status(500).json({ success: false, error: err });
-      });
-  });
+        .then(async (order) => {
+            if (order) {
+                await order.orderItems.map(async (orderItem) => {
+                    await OrderItem.findByIdAndRemove(orderItem)
+                })
+                return res
+                    .status(200)
+                    .json({ success: true, message: 'the order is deleted!' })
+            } else {
+                return res
+                    .status(404)
+                    .json({ success: false, message: 'order not found!' })
+            }
+        })
+        .catch((err) => {
+            return res.status(500).json({ success: false, error: err })
+        })
+})
 
 module.exports = router
