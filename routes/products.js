@@ -4,6 +4,19 @@ const { Category } = require('../models/category')
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, '/public/uploads')
+    },
+    filename: function (req, file, cb) {
+        const fileName = file.originalname.split(' ').join('-')
+        cb(null, fileName + '-' + Date.now())
+    },
+})
+
+const uploadOptions = multer({ storage: storage })
 
 router.get(`/all`, async (req, res) => {
     const productList = await Product.find().populate('category')
@@ -19,9 +32,9 @@ router.get(`/all`, async (req, res) => {
 })
 
 router.get(`/`, async (req, res) => {
-    let filter = {};
-    if(req.query.categories){
-        filter = {category:  req.query.categories.split(',') };
+    let filter = {}
+    if (req.query.categories) {
+        filter = { category: req.query.categories.split(',') }
     }
 
     const productList = await Product.find(filter)
@@ -49,7 +62,12 @@ router.get(`/:id`, async (req, res) => {
     res.send(product)
 })
 
-router.post(`/`, async (req, res) => {
+router.post(`/`, uploadOptions.single('image'), async (req, res) => {
+    const fileName = req.file.filename;
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+
+    console.log(req.file);
+
     const category = await Category.findById(req.body.category)
     if (!category) return res.status(400).send('Invalid Category')
 
@@ -57,7 +75,7 @@ router.post(`/`, async (req, res) => {
         name: req.body.name,
         description: req.body.description,
         richDescription: req.body.richDescription,
-        image: req.body.image,
+        image: `${basePath}${fileName}`,
         brand: req.body.brand,
         price: req.body.price,
         category: req.body.category,
@@ -140,13 +158,13 @@ router.get(`/get/count`, async (req, res) => {
 })
 
 router.get(`/get/featured/:totalnum`, async (req, res) => {
-    const count = req.params.totalnum ? req.params.totalnum : 0;
-    const products = await Product.find({ isFeatured: true}).limit(+count);
+    const count = req.params.totalnum ? req.params.totalnum : 0
+    const products = await Product.find({ isFeatured: true }).limit(+count)
 
     if (!products) {
         res.status(500).json({ success: false })
     }
-    res.send(products);
+    res.send(products)
 })
 
 module.exports = router
