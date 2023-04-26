@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
         }
         cb(
             uploadError,
-            'C:/Users/Guruprasad/source/repos/backend/public/uploads'
+            __dirname.replace('routes', '') + 'public/uploads'
         )
     },
     filename: function (req, file, cb) {
