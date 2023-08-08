@@ -61,7 +61,7 @@ router.delete('/:id', (req, res) => {
             if (category) {
                 return res
                     .status(200)
-                    .json({ success: true, message: 'the category is deleted' })
+                    .json({ success: true, message: `the category ${category.name} is deleted` })
             } else {
                 return res
                     .status(404)

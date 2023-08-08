@@ -5,3 +5,10 @@ Whatismyip.com
 
 Connection String
 mongodb+srv://guruece24:India123@cluster0.fpdxnhy.mongodb.net/?retryWrites=true&w=majority
+
+npm run start
+
+{
+    "email" : "karthick123@gmail.com",
+    "password" : "123456"
+}

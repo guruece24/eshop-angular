@@ -47,8 +47,10 @@ mongoose
     .catch((err) => {
         console.log(err)
     })
+	
+	currentDate = new Date();
 
 //Server
 app.listen(3000, () => {
-    console.log('server is running at http://localhost:3000');
+    console.log('server is running at http://localhost:3000' + ' Time: ' + currentDate.getHours() + ':' + currentDate.getMinutes());
 })

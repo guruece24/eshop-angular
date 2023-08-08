@@ -11,6 +11,9 @@ const categorySchema = mongoose.Schema({
     color: {
         type: String,
     },
+    checked: {
+        type: Boolean,
+    }
     // icon: {
     //     type: String,
     //     required: true,
@@ -22,12 +25,11 @@ const categorySchema = mongoose.Schema({
 })
 
 categorySchema.virtual('id').get(function () {
-    return this._id.toHexString();
-});
+    return this._id.toHexString()
+})
 
 categorySchema.set('toJSON', {
     virtuals: true,
-});
-
+})
 
 exports.Category = mongoose.model('Category', categorySchema)

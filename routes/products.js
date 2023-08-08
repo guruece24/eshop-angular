@@ -52,7 +52,7 @@ router.get(`/`, async (req, res) => {
 
     const productList = await Product.find(filter)
         .populate('category')
-        .select('name category price rating -_id')
+        
 
     if (!productList) {
         res.status(500).json({

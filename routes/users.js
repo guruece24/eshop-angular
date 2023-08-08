@@ -90,16 +90,15 @@ router.post(`/login`, async (req, res) => {
             {
                 userId: user.id,
                 isAdmin: user.isAdmin,
+				userName: user.name
             },
             secret,
-            { expiresIn: '7d' }
+            { expiresIn: '1d' }
         )
         res.status(200).send({ user: user.email, token: mytoken })
     } else {
         res.status(400).send('password is wrong!')
     }
-
-    return res.status(200).send(user)
 })
 
 router.delete('/:id', (req, res) => {
