@@ -12,3 +12,7 @@ npm run start
     "email" : "karthick123@gmail.com",
     "password" : "123456"
 }
+
+npm install heroku --save  --legacy-peer-deps
+npm heroku git:remote -a eshop-angular
+npm install -g heroku --save  --legacy-peer-deps
