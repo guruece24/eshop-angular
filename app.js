@@ -19,9 +19,9 @@ app.options('*', cors())
 //middleware
 app.use(express.json())
 app.use(morgan('dev'))
-app.use(authJwt());
-app.use('/public/uploads', express.static(__dirname + ('/public/uploads')));
-app.use(errorhand);
+app.use(authJwt())
+app.use('/public/uploads', express.static(__dirname + '/public/uploads'))
+app.use(errorhand)
 
 //Routes
 const categoriesRoutes = require('./routes/categories')
@@ -47,10 +47,17 @@ mongoose
     .catch((err) => {
         console.log(err)
     })
-	
-	currentDate = new Date();
+
+currentDate = new Date()
+const PORT = process.env.PORT || 3000;
 
 //Server
-app.listen(3000, () => {
-    console.log('server is running at http://localhost:3000' + ' Time: ' + currentDate.getHours() + ':' + currentDate.getMinutes());
+app.listen(PORT, () => {
+    console.log(
+        'server is running at http://localhost:3000' +
+            ' Time: ' +
+            currentDate.getHours() +
+            ':' +
+            currentDate.getMinutes()
+    )
 })
