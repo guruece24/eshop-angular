@@ -25,5 +25,6 @@
     "repository": {
         "type": "git",
         "url": "app.js"
-    }
+    },
+    "proxy": "http://localhost:3000"
 }
