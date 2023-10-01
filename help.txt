@@ -16,3 +16,10 @@ npm run start
 npm install heroku --save  --legacy-peer-deps
 npm heroku git:remote -a eshop-angular
 npm install -g heroku --save  --legacy-peer-deps
+
+
+$ heroku login
+
+$ git add .
+$ git commit -am "make it better"
+$ git push heroku master
