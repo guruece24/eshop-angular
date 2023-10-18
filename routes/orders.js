@@ -174,32 +174,33 @@ router.post('/create-checkout-session', async (req, res) => {
             .send('checkout session cannot be created - check the order items')
     }
 
-    const lineItems = await Promise.all(
+const lineItems = await Promise.all(
         orderItems.map(async (orderItem) => {
             const product = await Product.findById(orderItem.product)
-            return {
-                line_items: [
-                    {
+            return {                
                         price_data: {
-                            currency: 'usd',
+                            currency: 'INR',
                             product_data: {
                                 name: product.name,
                             },
                             unit_amount: product.price * 100,
                         },
                         quantity: orderItem.quantity,
-                    }
-                ],
-            }
+                    
+		  };
         })
     )
+    
+    const lineItemsResolved = await lineItems;
+    console.log(lineItemsResolved);
+    
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
-        line_items: lineItems,
+        line_items: lineItemsResolved,
         mode: 'payment',
-        success_url: 'https://guruece24.github.io/ngshop/success',
+        success_url: 'https://guruece24.github.io/ngshop/thank-you',
         cancel_url: 'https://guruece24.github.io/ngshop/error',
-    })
+    });
 
     res.json({ id: session.id })
 })
