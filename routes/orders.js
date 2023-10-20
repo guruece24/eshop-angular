@@ -198,8 +198,8 @@ const lineItems = await Promise.all(
         payment_method_types: ['card'],
         line_items: lineItemsResolved,
         mode: 'payment',
-        success_url: 'https://guruece24.github.io/ngshop/thank-you',
-        cancel_url: 'https://guruece24.github.io/ngshop/error',
+        success_url: 'http://localhost:4200/success',
+        cancel_url: 'http://localhost:4200/error',
     });
 
     res.json({ id: session.id })
